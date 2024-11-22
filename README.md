@@ -11,7 +11,6 @@ The study revealed:
 - **Code.Rmd**: Contains the R code used for analysis, including data preprocessing, transformation, assumption testing, and CCA.
 - **Dataset_Kesehatan.xlsx**: Dataset containing variables for population dynamics and service accessibility across Indonesian provinces.
 - **AOL Multivariate Kelompok 3.docx**: Detailed analysis report explaining methods, results, and interpretations.
-- **Canonical_Correlation_Analysis_Document.docx**: A structured Word document summarizing the study's findings.
 
 ## Methodology
 1. **Data Preprocessing**:
