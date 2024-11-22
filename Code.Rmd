@@ -1,0 +1,152 @@
+---
+title: "AoL"
+author: "Kelompok 3 LB06"
+date: "2024-06-26"
+output: 
+  html_document: default
+  word_document: default
+  pdf_document: default
+---
+
+# Preparation
+
+## Install Library
+
+```{r}
+#install.packages('expm')
+#install.packages('car')
+#install.packages('MASS')
+#install.packages('bestNormalize')
+#install.packages('MVN')
+#install.packages('mvShapiroTest)
+#install.packages('CCP')
+#install.packages('CCA')
+#install.packages('GGally')
+```
+
+## Import Library
+
+```{r}
+library(readxl)
+library(expm)
+library(car)
+library(MASS)
+library(bestNormalize)
+library(MVN)
+library(mvShapiroTest)
+library(CCP)
+library(CCA)
+library(GGally)
+```
+
+## Import Data
+
+```{r}
+data <- read_excel("C:/Users/Rasyad/OneDrive - Bina Nusantara/Semester 6/Multivariate Statistics/AOL/Dataset_Kesehatan.xlsx")
+
+X <- data[, 2:4]
+Y <- data[, 5:7]
+```
+
+# Assumption Test
+
+## Normal Multivariate Distribution
+
+```{r}
+dnm_x <- mvShapiro.Test(as.matrix(X))
+dnm_y <- mvShapiro.Test(as.matrix(Y))
+
+dnm_x
+dnm_y
+```
+
+## Multicolinearity
+
+```{r}
+model <- lm(Indeks ~ ., data = data)
+vif(model)
+```
+
+## Linearity
+
+```{r}
+ggpairs(data[,2:7])
+```
+
+## Scaling
+
+```{r}
+for (col in colnames(data)) {
+  transformation <- bestNormalize::yeojohnson(data[[col]])
+  data[[col]] <- transformation$x.t
+}
+
+X <- data[, 2:4]
+Y <- data[, 5:7]
+
+head(data)
+```
+
+# Post-Transformation
+
+## Normal Multivariate Distribution
+
+```{r}
+dnm_x <- mvShapiro.Test(as.matrix(X))
+dnm_y <- mvShapiro.Test(as.matrix(Y))
+
+dnm_x
+dnm_y
+```
+
+## Multicolinearity
+
+```{r}
+model <- lm(Indeks ~ ., data = data)
+vif(model)
+```
+
+## Linearity
+
+```{r}
+ggpairs(data[,2:7])
+```
+
+# Significant Testing
+
+## Full Test
+
+```{r}
+cancor_result <- cancor(X, Y)
+cancor_result
+```
+
+## Partial Test
+
+```{r}
+rho <- cancor_result$cor
+
+wilks_result <- p.asym(rho, nrow(data), ncol(X), ncol(Y), tstat = "Wilks")
+wilks_result
+```
+
+## Loadings
+
+```{r}
+can_loadings <- comput(X,Y,cc(X, Y))
+
+can_loadings$corr.X.xscores[,1]
+can_loadings$corr.Y.yscores[,1]
+can_loadings$corr.X.yscores[,1]
+can_loadings$corr.Y.xscores[,1]
+```
+
+## Weights
+
+```{r}
+weight_x <- cancor_result$xcoef
+weight_y <- cancor_result$ycoef
+
+weight_x
+weight_y
+```
